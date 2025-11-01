@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌦️ LSTM Weather Predictor</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet Map CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center text-center bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 font-sans">
+
+  <div class="bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-2xl p-6 w-11/12 md:w-2/3 lg:w-1/2">
+    <h1 class="text-3xl font-bold text-white mb-4 drop-shadow-md">🌍 LSTM Weather Predictor</h1>
+    <p class="text-white mb-4 text-lg">Click anywhere on the map to predict the weather condition!</p>
+    
+    <div id="map" class="rounded-xl shadow-md" style="height: 500px; width: 100%;"></div>
+    <p id="output" class="mt-5 text-white text-lg font-semibold"></p>
+  </div>
+
+  <script>
+    // Initialize map
+    var map = L.map('map').setView([17.385, 78.4867], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+    // API endpoint (your Hugging Face Space)
+    const HF_API_ENDPOINT = 'https://chandramoulibandaru02-weather-prediction.hf.space/predict';
+
+    // Handle click event
+    map.on('click', async function (e) {
+      const lat = e.latlng.lat;
+      const lon = e.latlng.lng;
+
+      document.getElementById('output').innerHTML = `⏳ Predicting weather at [${lat.toFixed(2)}, ${lon.toFixed(2)}]...`;
+
+      // Dummy feature data (24x7 array)
+      const dummyFeatures = Array.from({ length: 24 }, () =>
+        Array.from({ length: 7 }, () => Math.random())
+      );
+
+      try {
+        const res = await fetch(HF_API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ features: dummyFeatures }),
+        });
+
+        const result = await res.json();
+
+        if (result.predicted_weather) {
+          const weather = result.predicted_weather;
+          document.getElementById('output').innerHTML = `🌦️ Predicted Weather: <b>${weather}</b>`;
+
+          // Change background based on weather type
+          let bgClass = 'from-pink-400 via-purple-400 to-blue-400';
+          if (weather.toLowerCase().includes('rain')) bgClass = 'from-blue-500 via-sky-400 to-indigo-500';
+          else if (weather.toLowerCase().includes('cloud')) bgClass = 'from-gray-400 via-slate-500 to-gray-700';
+          else if (weather.toLowerCase().includes('sun') || weather.toLowerCase().includes('clear')) bgClass = 'from-yellow-300 via-orange-400 to-pink-400';
+
+          document.body.className = `min-h-screen flex flex-col items-center justify-center text-center bg-gradient-to-r ${bgClass} font-sans transition-all duration-1000`;
+        } else {
+          document.getElementById('output').innerHTML = `❌ Error: ${result.error}`;
+        }
+      } catch (err) {
+        document.getElementById('output').innerHTML = `⚠️ Failed to connect to API.`;
+      }
+    });
+  </script>
+</body>
+</html>

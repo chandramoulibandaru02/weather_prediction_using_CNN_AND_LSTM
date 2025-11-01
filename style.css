@@ -1,0 +1,101 @@
+/* ========== General Styles ========== */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+  background-size: 300% 300%;
+  animation: gradientShift 15s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background 1s ease-in-out;
+}
+
+/* ========== Gradient Animation ========== */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ========== Card Container ========== */
+.container {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.3);
+  padding: 2rem;
+  width: 90%;
+  max-width: 700px;
+  text-align: center;
+  transition: all 0.4s ease-in-out;
+}
+
+.container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.4);
+}
+
+/* ========== Title & Description ========== */
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ========== Map Styling ========== */
+#map {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+}
+
+#map:hover {
+  transform: scale(1.01);
+}
+
+/* ========== Output Text ========== */
+#output {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Weather Themes ========== */
+body.sunny {
+  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+}
+
+body.cloudy {
+  background: linear-gradient(135deg, #bdc3c7, #2c3e50);
+}
+
+body.rainy {
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+}
+
+/* Smooth transition when theme changes */
+body.sunny, body.cloudy, body.rainy {
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+  transition: background 1s ease;
+}
